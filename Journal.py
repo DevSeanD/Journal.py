@@ -42,7 +42,7 @@ class MainWindow(qtw.QWidget):
 			
 			for index in range(len(entryObjList)):
 				try:
-					entryObjList[index].changeText(lines[index])
+					entryObjList[index].changeText(lines[index][:size-1])
 				except: pass
 
 		#Create a button
@@ -110,4 +110,3 @@ def main():
 
 if __name__ == "__main__":
 	main() 
-
