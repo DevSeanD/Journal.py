@@ -2,13 +2,16 @@ import PyQt5.QtWidgets as qtw
 import PyQt5.QtGui as qtg
 from PyQt5 import QtCore
 import sys
+import os
 from datetime import datetime
+import os.path
 
 class MainWindow(qtw.QWidget):
 	def __init__(self,fileName):
 		super().__init__()
 		#Add title
 		self.setWindowTitle("Journal.py")
+		self.setGeometry(100, 60, 400, 200)
 		
 		#Set Verticle Layout
 		self.setLayout(qtw.QVBoxLayout()) 
@@ -16,7 +19,7 @@ class MainWindow(qtw.QWidget):
 		#Create label
 		title = qtw.QLabel("Journal.py")	
 		#Change label font size
-		title.setFont(qtg.QFont('Helvetica',18))
+		title.setFont(qtg.QFont('Helvetica',25))
 		#Add to layout
 		self.layout().addWidget(title)
 
@@ -36,14 +39,17 @@ class MainWindow(qtw.QWidget):
 		for index in range(9):
 			entryObjList.append(entryBox("field0"))
 			self.layout().addWidget(entryObjList[index].returnObj())
-		if(len(sys.argv) == 2):
+		try:
 			file = open(fileName,'r')
 			lines = file.readlines()
 			
 			for index in range(len(entryObjList)):
 				try:
-					entryObjList[index].changeText(lines[index][:size-1])
-				except: pass
+					entryObjList[index].changeText(lines[index])
+				except: 
+					pass
+		except:
+			print("Created new file {}".format(fileName))
 
 		#Create a button
 		button = qtw.QPushButton("Save",clicked=lambda: save())
@@ -66,11 +72,14 @@ class MainWindow(qtw.QWidget):
 					print(line)
 
 		def save():
-			title.setText(entryObjList[0].returnContent())
-			print(fileName)
+			if(os.path.isfile(fileName)):
+				end = ''
+			else:
+				end = '\n'
+
 			with open(fileName,'w') as file:
 				for index in range(len(entryObjList)):
-					file.write(str(entryObjList[index].returnContent()) + '\n')
+					file.write(str(entryObjList[index].returnContent()) + end)
 				file.close()
 
 class entryBox():
@@ -93,6 +102,7 @@ class checkBox():
 
 	def returnObj(self):
 		return self.checkBox
+
 def main():	
 	app = qtw.QApplication([])
 	
@@ -102,8 +112,7 @@ def main():
 	else:
 		date = datetime.now()
 		date = str(date).split()
-		fileName = date[0] + ".txt"
-
+		fileName = "Logs/" + date[0] + ".txt"
 		mainWindow = MainWindow(fileName)
 
 	app.exec_()	
