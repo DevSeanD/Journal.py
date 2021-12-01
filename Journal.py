@@ -1,3 +1,11 @@
+"""
+Developer: DevSeanD
+Description: Journal.py is a simple Journaling application that uses PyQt5 as a front end
+File Name: Journal.py
+
+TODO:
+	Add a function that will create the dir Logs if it does not exist already
+"""
 import PyQt5.QtWidgets as qtw
 import PyQt5.QtGui as qtg
 from PyQt5 import QtCore
@@ -45,11 +53,18 @@ class MainWindow(qtw.QWidget):
 			
 			for index in range(len(entryObjList)):
 				try:
-					entryObjList[index].changeText(lines[index])
+					if(lines[index][0] == "\n"):
+						entryObjList[index].changeText(lines[index][1:])
+					else:
+						entryObjList[index].changeText(lines[index])
 				except: 
 					pass
 		except:
-			print("Created new file {}".format(fileName))
+			file = open(fileName,'w')
+			for index in range(9):
+				file.write('\n')
+			file.close()
+			print("Created new file {}".format(fileName))	
 
 		#Create a button
 		button = qtw.QPushButton("Save",clicked=lambda: save())
@@ -72,14 +87,13 @@ class MainWindow(qtw.QWidget):
 					print(line)
 
 		def save():
-			if(os.path.isfile(fileName)):
-				end = ''
-			else:
-				end = '\n'
-
 			with open(fileName,'w') as file:
 				for index in range(len(entryObjList)):
-					file.write(str(entryObjList[index].returnContent()) + end)
+					print(str(entryObjList[index].returnContent()))
+					if(str(entryObjList[index].returnContent()).count("\n") >= 1):
+						file.write(str(entryObjList[index].returnContent()))
+					else:
+						file.write(str(entryObjList[index].returnContent()) + "\n")
 				file.close()
 
 class entryBox():
@@ -118,4 +132,5 @@ def main():
 	app.exec_()	
 
 if __name__ == "__main__":
-	main() 
+	main()
+ 
