@@ -4,7 +4,7 @@ Description: Journal.py is a simple Journaling application that uses PyQt5 as a 
 File Name: Journal.py
 
 TODO:
-	Add a function that will create the dir Logs if it does not exist already
+	Update to new UI with two sections. TODO and Completed
 """
 import PyQt5.QtWidgets as qtw
 import PyQt5.QtGui as qtg
@@ -89,7 +89,6 @@ class MainWindow(qtw.QWidget):
 		def save():
 			with open(fileName,'w') as file:
 				for index in range(len(entryObjList)):
-					print(str(entryObjList[index].returnContent()))
 					if(str(entryObjList[index].returnContent()).count("\n") >= 1):
 						file.write(str(entryObjList[index].returnContent()))
 					else:
@@ -118,6 +117,9 @@ class checkBox():
 		return self.checkBox
 
 def main():	
+	if not(os.path.exists("Logs")):
+		os.system("mkdir Logs")
+
 	app = qtw.QApplication([])
 	
 	# If the user request an existing file
